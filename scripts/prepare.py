@@ -1,6 +1,7 @@
 import json,base64
 from pathlib import Path
 p=Path(__file__).resolve().parent.parent
+(p/'worker').mkdir(exist_ok=True)
 html=(p/'src/index.html').read_text()
 assets={}
 for f in (p/'assets').iterdir():
