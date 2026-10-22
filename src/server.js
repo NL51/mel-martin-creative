@@ -1,0 +1,19 @@
+const origin='https://mel-martin-creative.roundprawn256.chatgpt.site';
+function json(data,status=200){return new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}})}
+export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname==='/api/contact'){
+if(request.method!=='POST')return json({error:'Method not allowed'},405);
+if(request.headers.get('Origin')!==url.origin)return json({error:'Invalid origin'},403);
+if(Number(request.headers.get('content-length')||0)>12000)return json({error:'Too large'},413);
+let d;try{const raw=await request.text();if(raw.length>12000)return json({error:'Too large'},413);d=JSON.parse(raw)}catch{return json({error:'Invalid input'},400)}
+if(d.website)return json({ok:true});
+if(typeof d.name!=='string'||!d.name.trim()||d.name.length>120||typeof d.email!=='string'||d.email.length>200||!/^\S+@\S+\.\S+$/.test(d.email)||typeof d.message!=='string'||d.message.trim().length<10||d.message.length>4000)return json({error:'Check the required fields'},400);
+if(!env.BUCKET)return json({error:'Contact temporarily unavailable'},503);
+const id=crypto.randomUUID();try{await env.BUCKET.put('inquiries/'+new Date().toISOString().slice(0,10)+'/'+id+'.json',JSON.stringify({id,name:d.name.trim(),email:d.email.trim(),interest:String(d.interest||'').slice(0,100),message:d.message.trim(),created_at:new Date().toISOString()}),{httpMetadata:{contentType:'application/json'}});return json({ok:true,id})}catch{return json({error:'Unable to save'},503)}
+}
+if(request.method!=='GET'&&request.method!=='HEAD')return new Response('Method not allowed',{status:405});
+if(ASSETS[url.pathname]){const a=ASSETS[url.pathname];return new Response(request.method==='HEAD'?null:Uint8Array.from(atob(a.data),c=>c.charCodeAt(0)),{headers:{'Content-Type':a.type,'Cache-Control':'public,max-age=3600'}})}
+if(url.pathname==='/robots.txt')return new Response('User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: '+origin+'/sitemap.xml',{headers:{'Content-Type':'text/plain'}});
+if(url.pathname==='/sitemap.xml')return new Response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>'+origin+'/</loc></url><url><loc>'+origin+'/privacy</loc></url></urlset>',{headers:{'Content-Type':'application/xml'}});
+if(url.pathname==='/privacy')return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy | Mel Martin</title><body style="font:17px/1.7 system-ui;background:#f8f7f3;color:#152426;max-width:720px;margin:60px auto;padding:25px"><a href="/">← Back to Mel Martin</a><h1>Privacy</h1><p>Contact submissions include your name, email, interest and message. These are stored securely for the purpose of responding to your inquiry and are accessible to the site owner and authorized administrators. They are not sold or used to subscribe you to marketing.</p><p>To request access or deletion, email contactmelmartin@gmail.com. Please avoid submitting sensitive information. Inquiries are retained until no longer needed; contact Mel to request removal.</p><p>The site embeds Spotify, which may receive your IP address and browser data and use cookies under its own privacy policy. External links take you to independently operated services. This site does not use advertising trackers or analytics cookies.</p><p>Updated October 21, 2026.</p></body></html>',{headers:{'Content-Type':'text/html;charset=utf-8'}});
+if(url.pathname!=='/')return new Response('Page not found',{status:404});return new Response(request.method==='HEAD'?null:HTML,{headers:{'Content-Type':'text/html;charset=utf-8','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin'}})
+}};
