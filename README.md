@@ -15,7 +15,7 @@ Run `python scripts/prepare.py`, `bash scripts/build.sh`, then `node scripts/val
 POST /api/contact validates fields and stores inquiries under `inquiries/YYYY-MM-DD/<uuid>.json` in the private R2 BUCKET. No public listing or read endpoint. Email notifications are not configured. Site administrators must review stored inquiries; visitors also have a direct mailto link. Configure an email provider and a retention process before a full business launch. Do not expose inquiry storage publicly.
 
 ## Content handoff
-Replace labeled illustrative gallery studies with Mel's licensed photography/art. Replace concept book cover when available. Book and Human-AI program are in development; no checkout or unsupported availability claims. The planned book-inspired conversation series is separate from the existing Opportunity Now show. Domain MelMartin.me has not been connected. Canonical URLs currently point to the deployed Sites origin; update them with a custom-domain launch.
+Replace labeled illustrative gallery studies with Mel's licensed photography/art. Replace concept book cover when available. Book and Human-AI program are in development; no checkout or unsupported availability claims. The planned book-inspired conversation series is separate from the existing Opportunity Now show. Domain MelMartin.me has not been connected. Canonical URLs, share-image URLs, structured data and sitemap use https://melmartin.raivyn.io.
 
 ## GitHub
 Mirror: https://github.com/NL51/mel-martin-creative
