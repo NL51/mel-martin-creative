@@ -1,4 +1,4 @@
-const origin='https://mel-martin-creative.roundprawn256.chatgpt.site';
+const origin='https://melmartin.raivyn.io';
 function json(data,status=200){return new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}})}
 export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname==='/api/contact'){
 if(request.method!=='POST')return json({error:'Method not allowed'},405);
